@@ -1,5 +1,5 @@
 # Project_G_Z
-Zuzanna Wasiluk zuzannawasiluk 10/08 Mini Project 2 
+Zuzanna zuzannawasiluk 10/08 Mini Project 2 George
 
 Hello
 I am not sure whether this is working
