@@ -55,7 +55,7 @@ goalkeeper_stats <- function(stat){
 }
 ```
 
-Harper Collins Test
+Penguin Random House Test
 
 ```{r}
 robotstxt::paths_allowed("https://www.penguinrandomhouse.com/authors/events/")
