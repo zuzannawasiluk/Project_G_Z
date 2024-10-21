@@ -4,3 +4,100 @@ format: html
 editor: visual
 ---
 
+```{r}
+#| include: FALSE
+library(tidyverse)
+library(stringr)
+library(rvest)
+library(polite)
+library(sf)
+library(maps)
+library(viridis)
+library(leaflet)
+library(htmltools)
+library(httr)
+library(httr2)
+library(janitor)
+```
+
+```{r}
+#Step 0
+robotstxt::paths_allowed("https://www.premierleague.com/stats")
+url <- str_c("https://www.premierleague.com/stats/top/players/clean_sheet")
+soccer_url <- read_html(url)
+stat <- html_nodes(soccer_url, css = "table")
+html_table(stat, header = TRUE, fill = TRUE) 
+clean_sheets <- html_table(stat, header = TRUE, fill = TRUE)
+```
+
+```{r}
+session <- bow("https://www.premierleague.com/stats/top/players/yellow_card", force = TRUE)
+
+result <- scrape(session) |>
+  html_nodes(css = "table") |> 
+  html_table(header = TRUE, fill = TRUE)
+
+
+for (i in goalkeeper) {
+  url <- str_c("https://www.premierleague.com/stats/top/players/", i)
+  session <- bow(url, force = TRUE)
+  result <- scrape(session)
+  html_nodes(css = "table") |> 
+  html_table(header = TRUE, fill = TRUE)
+}
+
+goalkeeper_stats <- function(stat){
+  url <- str_c("https://www.premierleague.com/stats/top/players/", stat)
+  session <- bow(url, force = TRUE, per_page=100)
+  result <- scrape(session) |> 
+    html_nodes(css = "table") |> 
+    html_table(header = TRUE, fill = TRUE)
+}
+```
+
+Harper Collins Test
+
+```{r}
+robotstxt::paths_allowed("https://www.penguinrandomhouse.com/authors/events/")
+
+info_from_page <- function(event, css_selector) {
+  read_html(event) |> 
+    html_nodes(css_selector) |> 
+    html_text()
+}
+
+info_from_page("https://www.penguinrandomhouse.com/authors/events/", ".date-display")
+```
+
+```{r}
+scrape_events <- function(url) {
+    Sys.sleep(2)
+    event_date <- info_from_page(url, ".start")
+    event_book <- info_from_page(url, ".author-of a")
+    event_author <- info_from_page(url, ".author-name:nth-child(1)")
+    event_host <- info_from_page(url, ".event-location .hdr")
+    event_state <- info_from_page(url, "span:nth-child(4)")
+    
+    tibble(date = event_date, 
+           book = event_book, 
+           author = event_author,
+           host = event_host,
+           state = event_state
+    )
+}
+```
+
+```{r}
+scrape_events("https://www.penguinrandomhouse.com/authors/events/?page=1")
+```
+
+
+
+
+
+
+
+
+
+
+
