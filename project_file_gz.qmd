@@ -37,25 +37,18 @@ result <- scrape(session) |>
   html_nodes(css = "table") |> 
   html_table(header = TRUE, fill = TRUE)
 
-
-for (i in goalkeeper) {
-  url <- str_c("https://www.premierleague.com/stats/top/players/", i)
-  session <- bow(url, force = TRUE)
-  result <- scrape(session)
-  html_nodes(css = "table") |> 
-  html_table(header = TRUE, fill = TRUE)
-}
-
 goalkeeper_stats <- function(stat){
   url <- str_c("https://www.premierleague.com/stats/top/players/", stat)
-  session <- bow(url, force = TRUE, per_page=100)
+  session <- bow(url, force = TRUE)
   result <- scrape(session) |> 
     html_nodes(css = "table") |> 
     html_table(header = TRUE, fill = TRUE)
 }
+
+goalkeeper_stats("https://www.premierleague.com/stats/top/players/", "yellow_card")
 ```
 
-Penguin Random House Test
+Penguin Random House Web Scraping
 
 ```{r}
 robotstxt::paths_allowed("https://www.penguinrandomhouse.com/authors/events/")
@@ -88,16 +81,34 @@ scrape_events <- function(url) {
 ```
 
 ```{r}
-scrape_events("https://www.penguinrandomhouse.com/authors/events/?page=1")
+scrape_events("https://www.penguinrandomhouse.com/authors/events")
 ```
 
+Penguin Random House Table Scraping 
 
+```{r}
+robotstxt::paths_allowed("https://jobsearch.createyourowncareer.com/PRH_US/go/PRH_US_Publishing_and_Corporate/9050001/?locale=en_US")
+session <- bow("https://jobsearch.createyourowncareer.com/PRH_US/go/PRH_US_Publishing_and_Corporate/9050001/?locale=en_US", force = TRUE)
 
+result <- scrape(session) |>
+  html_nodes(css = "table") |> 
+  html_table(header = TRUE, fill = TRUE)
 
+careers_data <- result [[1]] |> 
+  clean_names()
+```
 
+Cleaning!
 
-
-
-
+```{r}
+careers_data |> 
+  filter(!row_number() == 1) |> 
+  mutate(title = str_replace_all(title, "[\n\t]", " "),
+         title = str_trim(title),
+         title = str_replace_all(title, "\\(.*?\\)", ""),
+         title = str_replace_all(title, "\\s*,\\s*", ", "),
+         title = str_split(title, ",", simplify = TRUE)[1],
+         title = str_trim(title))
+```
 
 
