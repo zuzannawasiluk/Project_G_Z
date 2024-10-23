@@ -42,6 +42,7 @@ scrape_events <- function(url) {
     event_author <- info_from_page(url, ".author-name:nth-child(1)")
     event_host <- info_from_page(url, ".event-location .hdr")
     event_state <- info_from_page(url, "span:nth-child(4)")
+    options(timeout = 700)
     
     tibble(date = event_date, 
            book = event_book, 
@@ -56,15 +57,14 @@ scrape_events <- function(url) {
 scrape_events("https://www.penguinrandomhouse.com/authors/events/?page=2")
 ```
 ```{r}
-event_day <- function(date_from, date_to){
-  base_url <- "https://www.penguinrandomhouse.com/authors/events/?"
-  penguin_url <- str_c(base_url, "datefrom=", date_from , "&dateto=", date_to)
+scrape_events <- function(url){
   
-  date <- info_from_page(penguin_url, ".start")
-  book <- info_from_page(penguin_url, ".author-of a")
-  author <- info_from_page(penguin_url, ".author-name:nth-child(1)")
-  host <- info_from_page(penguin_url, ".event-location .hdr")
-  state <- info_from_page(penguin_url, "span:nth-child(4)")
+  date <- info_from_page(url, ".start")
+  book <- info_from_page(url, ".author-of a")
+  author <- info_from_page(url, ".author-name:nth-child(1)")
+  host <- info_from_page(url, ".event-location .hdr")
+  state <- info_from_page(url, "span:nth-child(4)")
+  zip_code <- info_from_page(url, "span:nth-child(5)")
   
   tibble(date = date, 
            book = book, 
@@ -73,8 +73,6 @@ event_day <- function(date_from, date_to){
            state = state)
   
 }
-
-event_day("11/01/2024", "11/01/2024")
 ```
 
 ```{r}
@@ -86,6 +84,7 @@ for(i in c(10, 11, 12, 1, 2, 3, 4)){
   }
 }
 ```
+
 ```{r}
 i=11
 j=1
@@ -105,12 +104,10 @@ for(j in 23:31){
   
   october_tibble <- bind_rows(october) |> 
   as.tibble()
-```
-
-```{r}
+  
 november <- list()
   i=11
-for(j in 1:20){
+for(j in 1:30){
     date = str_c(i, "/", j, "/", "2024")
     url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
     november[[j]] <- scrape_events(url)
@@ -118,9 +115,7 @@ for(j in 1:20){
   
   november_tibble <- bind_rows(november) |> 
     as.tibble()
-```
-
-```{r}
+  
 december <- list()
   i=12
 for(j in 1:31){
@@ -134,50 +129,59 @@ for(j in 1:31){
 ```
 
 ```{r}
+events <- rbind(october_tibble,
+                 november_tibble,
+                 december_tibble,
+                 january_tibble,
+                 february_tibble,
+                 march_tibble,
+                 april_tibble)
+events
+```
+
+
+```{r}
 january <- list()
   i=1
 for(j in 1:31){
-    date = str_c(i, "/", j, "/", "2024")
+    date = str_c(i, "/", j, "/", "2025")
     url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
     january[[j]] <- scrape_events(url)
 }
   
-  bind_rows(january)
-```
+january_tibble <- bind_rows(january) |> 
+as.tibble()
 
-```{r}
 february <- list()
   i=2
 for(j in 1:28){
-    date = str_c(i, "/", j, "/", "2024")
+    date = str_c(i, "/", j, "/", "2025")
     url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
     february[[j]] <- scrape_events(url)
 }
   
-  bind_rows(february)
-```
-
-```{r}
+  february_tibble <- bind_rows(february) |> 
+    as.tibble()
+  
 march <- list()
   i=3
 for(j in 1:31){
-    date = str_c(i, "/", j, "/", "2024")
+    date = str_c(i, "/", j, "/", "2025")
     url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
     march[[j]] <- scrape_events(url)
 }
   
-  bind_rows(march)
-```
-
-```{r}
+  march_tibble <- bind_rows(march) |> 
+    as.tibble()
+  
 april <- list()
   i=4
 for(j in 1:30){
-    date = str_c(i, "/", j, "/", "2024")
+    date = str_c(i, "/", j, "/", "2025")
     url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
     april[[j]] <- scrape_events(url)
 }
   
-  bind_rows(april)
+april_tibble <- bind_rows(april) |> 
+as.tibble()
 ```
-
