@@ -20,34 +20,6 @@ library(httr2)
 library(janitor)
 ```
 
-```{r}
-#Step 0
-robotstxt::paths_allowed("https://www.premierleague.com/stats")
-url <- str_c("https://www.premierleague.com/stats/top/players/clean_sheet")
-soccer_url <- read_html(url)
-stat <- html_nodes(soccer_url, css = "table")
-html_table(stat, header = TRUE, fill = TRUE) 
-clean_sheets <- html_table(stat, header = TRUE, fill = TRUE)
-```
-
-```{r}
-session <- bow("https://www.premierleague.com/stats/top/players/yellow_card", force = TRUE)
-
-result <- scrape(session) |>
-  html_nodes(css = "table") |> 
-  html_table(header = TRUE, fill = TRUE)
-
-goalkeeper_stats <- function(stat){
-  url <- str_c("https://www.premierleague.com/stats/top/players/", stat)
-  session <- bow(url, force = TRUE)
-  result <- scrape(session) |> 
-    html_nodes(css = "table") |> 
-    html_table(header = TRUE, fill = TRUE)
-}
-
-goalkeeper_stats("https://www.premierleague.com/stats/top/players/", "yellow_card")
-```
-
 Penguin Random House Web Scraping
 
 ```{r}
@@ -86,7 +58,7 @@ scrape_events("https://www.penguinrandomhouse.com/authors/events/?page=2")
 ```{r}
 event_day <- function(date_from, date_to){
   base_url <- "https://www.penguinrandomhouse.com/authors/events/?"
-  penguin_url <- str_c(base_url, "datefrom=", date_from , "dateto=", date_to)
+  penguin_url <- str_c(base_url, "datefrom=", date_from , "&dateto=", date_to)
   
   date <- info_from_page(penguin_url, ".start")
   book <- info_from_page(penguin_url, ".author-of a")
@@ -102,36 +74,110 @@ event_day <- function(date_from, date_to){
   
 }
 
-event_day("10/31/2024", "11/01/2024")
+event_day("11/01/2024", "11/01/2024")
 ```
-
-
-
-Penguin Random House Table Scraping - Careers
 
 ```{r}
-robotstxt::paths_allowed("https://jobsearch.createyourowncareer.com/PRH_US/go/PRH_US_Publishing_and_Corporate/9050001/?locale=en_US")
-session <- bow("https://jobsearch.createyourowncareer.com/PRH_US/go/PRH_US_Publishing_and_Corporate/9050001/?locale=en_US", force = TRUE)
-
-result <- scrape(session) |>
-  html_nodes(css = "table") |> 
-  html_table(header = TRUE, fill = TRUE)
-
-careers_data <- result [[1]] |> 
-  clean_names()
+for(i in c(10, 11, 12, 1, 2, 3, 4)){
+  for(j in 1:31){
+    date = str_c(i, "/", j, "/", "2024")
+    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    scrape_events(url)
+  }
+}
 ```
-
-Cleaning!
+```{r}
+i=11
+j=1
+date = str_c(i, "/", j, "/", "2024")
+url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+scrape_events(url)
+```
 
 ```{r}
-careers_data |> 
-  filter(!row_number() == 1) |> 
-  mutate(title = str_replace_all(title, "[\n\t]", " "),
-         title = str_trim(title),
-         title = str_replace_all(title, "\\(.*?\\)", ""),
-         title = str_replace_all(title, "\\s*,\\s*", ", "),
-         title = str_split(title, ",", simplify = TRUE)[[1]],
-         title = str_trim(title))
+october <- list()
+  i=10
+for(j in 23:31){
+    date = str_c(i, "/", j, "/", "2024")
+    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    october[[j]] <- scrape_events(url)
+}
+  
+  october_tibble <- bind_rows(october) |> 
+  as.tibble()
 ```
 
+```{r}
+november <- list()
+  i=11
+for(j in 1:20){
+    date = str_c(i, "/", j, "/", "2024")
+    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    november[[j]] <- scrape_events(url)
+}
+  
+  november_tibble <- bind_rows(november) |> 
+    as.tibble()
+```
+
+```{r}
+december <- list()
+  i=12
+for(j in 1:31){
+    date = str_c(i, "/", j, "/", "2024")
+    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    december[[j]] <- scrape_events(url)
+}
+  
+  december_tibble <- bind_rows(december) |> 
+    as.tibble()
+```
+
+```{r}
+january <- list()
+  i=1
+for(j in 1:31){
+    date = str_c(i, "/", j, "/", "2024")
+    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    january[[j]] <- scrape_events(url)
+}
+  
+  bind_rows(january)
+```
+
+```{r}
+february <- list()
+  i=2
+for(j in 1:28){
+    date = str_c(i, "/", j, "/", "2024")
+    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    february[[j]] <- scrape_events(url)
+}
+  
+  bind_rows(february)
+```
+
+```{r}
+march <- list()
+  i=3
+for(j in 1:31){
+    date = str_c(i, "/", j, "/", "2024")
+    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    march[[j]] <- scrape_events(url)
+}
+  
+  bind_rows(march)
+```
+
+```{r}
+april <- list()
+  i=4
+for(j in 1:30){
+    date = str_c(i, "/", j, "/", "2024")
+    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    april[[j]] <- scrape_events(url)
+}
+  
+  bind_rows(april)
+```
 
