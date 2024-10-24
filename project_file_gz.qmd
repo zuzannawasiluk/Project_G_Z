@@ -20,17 +20,24 @@ library(httr2)
 library(janitor)
 ```
 
-Penguin Random House Web Scraping
+## Penguin Random House Web Scraping
 
 ```{r}
+#Download SelectorGadget to browser
+#Step 0: Check if the website allows scraping + making sure to do it in a friendly manner
 robotstxt::paths_allowed("https://www.penguinrandomhouse.com/authors/events/")
 
+#Create a function to find individual information from the events page
 info_from_page <- function(event, css_selector) {
+#Read the URL containing event data and turn the html code into an XML
   read_html(event) |> 
+#Extracting nodes from the XML by using the CSS path from selector
     html_nodes(css_selector) |> 
+#Extracting text
     html_text()
 }
 
+#Test, event page and the date
 info_from_page("https://www.penguinrandomhouse.com/authors/events/", ".date-display")
 ```
 
