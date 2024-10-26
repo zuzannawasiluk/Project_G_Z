@@ -1,6 +1,6 @@
 ---
 title: "Project_File_Z_G"
-format: html
+format: pdf
 editor: visual
 ---
 
@@ -24,8 +24,6 @@ library(janitor)
 
 Our data comes from the events page in Penguin Random House. You can find the events page using this link:  (https://www.penguinrandomhouse.com/authors/events/). 
 
-
-
 ```{r}
 #Download SelectorGadget to browser
 #Step 0: Check if the website allows scraping + making sure to do it in a friendly manner
@@ -45,9 +43,8 @@ info_from_page("https://www.penguinrandomhouse.com/authors/events/", ".date-disp
 ```
 ## Ethical Scraping 
 
-
-
 ```{r}
+#Creating a function called scrape_events that takes information from the events page using the CSS path and compiles it into a tibble 
 scrape_events <- function(url){
   
   date <- info_from_page(url, ".start")
@@ -64,20 +61,36 @@ scrape_events <- function(url){
            state = state)
   
 }
+
+#Test to see what our tibble looks like
 scrape_events("https://www.penguinrandomhouse.com/authors/events/?page=2")
 ```
 
 ```{r}
+#| eval: FALSE
+#This for loop runs all of the months and all of the days in one chunk but it is not the most efficient because of how long it takes to run.
+
+#If someone is interested in keeping this method in one chunk they can use this code for the nested for loop.
+
+#Nested for loop with i for months and j for days. 
 for(i in c(10, 11, 12, 1, 2, 3, 4)){
+#Runs the j for loop for each of the values in i
   for(j in 1:31){
+#Combining i and j for the dates
     date = str_c(i, "/", j, "/", "2024")
+#Joining the url together
     url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+#Using the function we previously made to scrape events 
     scrape_events(url)
   }
 }
 ```
 
 ```{r}
+#Test chunk to see if our previous code worked with a smaller set of data
+
+#If you wanted to run the previous code chunk, this test proves that it will give you something similar to this, only larger.
+
 i=11
 j=1
 date = str_c(i, "/", j, "/", "2024")
@@ -86,17 +99,20 @@ scrape_events(url)
 ```
 
 ```{r}
+#Running each individual month as a separate for loop to be more efficient
+
+#Create a list to store your scraped data
 october <- list()
   i=10
-for(j in 23:31){
+for(j in 1:31){
     date = str_c(i, "/", j, "/", "2024")
     url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
     october[[j]] <- scrape_events(url)
 }
-  
+
+#Create a tibble 
   october_tibble <- bind_rows(october) |> 
-  as.tibble() |> 
-  mutate(host = str_to_title(host))
+  as.tibble()
 
   
 november <- list()
@@ -108,8 +124,7 @@ for(j in 1:30){
 }
   
   november_tibble <- bind_rows(november) |> 
-    as.tibble() |> 
-    mutate(host = str_to_title(host))
+    as.tibble() 
   
 december <- list()
   i=12
@@ -120,11 +135,8 @@ for(j in 1:31){
 }
   
   december_tibble <- bind_rows(december) |> 
-    as.tibble() |> 
-    mutate(host = str_to_title(host))
-```
-
-```{r}
+    as.tibble()
+  
 january <- list()
   i=1
 for(j in 1:31){
@@ -134,8 +146,7 @@ for(j in 1:31){
 }
   
 january_tibble <- bind_rows(january) |> 
-as.tibble() |> 
-mutate(host = str_to_title(host))
+as.tibble()
 
 february <- list()
   i=2
@@ -146,8 +157,7 @@ for(j in 1:28){
 }
   
   february_tibble <- bind_rows(february) |> 
-    as.tibble() |> 
-    mutate(host = str_to_title(host))
+    as.tibble() 
   
 march <- list()
   i=3
@@ -158,8 +168,7 @@ for(j in 1:31){
 }
   
   march_tibble <- bind_rows(march) |> 
-    as.tibble() |> 
-    mutate(host = str_to_title(host))
+    as.tibble() 
   
 april <- list()
   i=4
@@ -170,11 +179,11 @@ for(j in 1:30){
 }
   
 april_tibble <- bind_rows(april) |> 
-as.tibble() |> 
-mutate(host = str_to_title(host))
+as.tibble()
 ```
 
 ```{r}
+#Bind all of the tibbles from the previous chunk together to create one big tibble called events 
 events <- rbind(october_tibble,
                  november_tibble,
                  december_tibble,
@@ -186,7 +195,11 @@ events
 ```
 
 ```{r}
-events <- events |> 
+#Final tibble is titled penguin_events 
+penguin_events <- events |> 
+#Separate the time from 
   separate(date, into = c("date", "time"), sep = " at ") |> 
-  mutate(host = str_replace_all(host, "[\r\n]", " "))
+#Some of the host names were all caps or had other abnormalities with 
+  mutate(host = str_to_title(host),
+         host = str_replace_all(host, "[\r\n]", " "))
 ```
