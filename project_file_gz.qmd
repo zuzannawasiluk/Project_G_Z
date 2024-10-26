@@ -24,6 +24,10 @@ library(janitor)
 
 Our data comes from the events page in Penguin Random House. You can find the events page using this link:  (https://www.penguinrandomhouse.com/authors/events/). 
 
+## Ethical Considerations
+
+We opted to use the robot.txt paths to determine if data from Penguin's book events was permitted for web scraping. The site’s robots.txt file allowed our bots to access and scrape the data. While we considered implementing a polite function to ensure a respectful approach to data retrieval, this step appeared unnecessary given that the data is public and intended for widespread use.
+
 ```{r}
 #Download SelectorGadget to browser
 #Step 0: Check if the website allows scraping + making sure to do it in a friendly manner
@@ -33,15 +37,14 @@ robotstxt::paths_allowed("https://www.penguinrandomhouse.com/authors/events/")
 info_from_page <- function(event, css_selector) {
   read_html(event) |> 
 #Extracting nodes from the XML by using the CSS path from selector
-    html_nodes(css_selector) |> 
+  html_nodes(css_selector) |> 
 #Extracting text
-    html_text()
+  html_text()
 }
 
 #Test, event page and the date
 info_from_page("https://www.penguinrandomhouse.com/authors/events/", ".date-display")
 ```
-## Ethical Scraping 
 
 ```{r}
 #Creating a function called scrape_events that takes information from the events page using the CSS path and compiles it into a tibble 
@@ -197,9 +200,11 @@ events
 ```{r}
 #Final tibble is titled penguin_events 
 penguin_events <- events |> 
-#Separate the time from 
+#Separate the time from date to create a separate column for the time of the events
   separate(date, into = c("date", "time"), sep = " at ") |> 
-#Some of the host names were all caps or had other abnormalities with 
+#Some of the host names were all caps or had other abnormalities that we needed to fix so we used str_to_title to have them all in title case
   mutate(host = str_to_title(host),
-         host = str_replace_all(host, "[\r\n]", " "))
+#Some observations had strange patterns in the text (r/n) that distracted from the host's name 
+         host = str_replace_all(host, "[\r\n]", " ")
+  )
 ```
