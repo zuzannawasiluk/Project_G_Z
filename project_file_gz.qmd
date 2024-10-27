@@ -45,12 +45,12 @@ Students can use our data to answer questions such as:
 Upon further reflection, we discovered that our data could also be used by booksellers, book agents, and authors. Booksellers and authors may find our data useful because they can analyze current trends with where authors are going (chain or independent bookstore) and what authors are successful in book events (if we assume multiple book events equals a marketable author).Book agents within Penguin Random House or outside of it (smaller boutique literary agencies or other Big Five publishers) can use our data to answer questions on which authors are holding events, when a certain book is no longer welcomed in event spaces, and perhaps even publicity tactics. Ultimately, this data has relevant applications for different data needs within the publishing industry, not just students.
 
 ```{r}
-#Download SelectorGadget to browser
+#Download SelectorGadget to browser to find CSS path
 
 #Step 0: Check if the website allows scraping 
 robotstxt::paths_allowed("https://www.penguinrandomhouse.com/authors/events/")
 
-#Create a function to find individual information from the events page
+#Extract individual information from the events page 
 info_from_page <- function(event, css_selector) {
   read_html(event) |> 
 #Extracting nodes from the XML by using the CSS path from selector
@@ -59,13 +59,12 @@ info_from_page <- function(event, css_selector) {
   html_text()
 }
 
-#Test, event page and the date
+#Test, the function works
 info_from_page("https://www.penguinrandomhouse.com/authors/events/", ".date-display")
 ```
 
 ```{r}
-#Creating a function called scrape_events to scrape info
-#   using the CSS path and compile it into a tibble 
+#Scrape info using the CSS path and compile it into a tibble 
 scrape_events <- function(url){
   
   date <- info_from_page(url, ".start")
@@ -83,7 +82,7 @@ scrape_events <- function(url){
   
 }
 
-#Test to see what our tibble looks like
+#Test to see that our tibble looks appropriate
 scrape_events("https://www.penguinrandomhouse.com/authors/events/?page=2")
 ```
 
@@ -97,13 +96,12 @@ scrape_events("https://www.penguinrandomhouse.com/authors/events/?page=2")
 
 #Nested for loop with i for months and j for days. 
 for(i in c(10, 11, 12, 1, 2, 3, 4)){
-#Runs the j for loop for each of the values in i
+#Runs to find data for all of the dates in these months
+#   we can compile all of the data together 
   for(j in 1:31){
-#Combining i and j for the dates
+#Combining i and j for the dates to keep track of event dates
     date = str_c(i, "/", j, "/", "2024")
-#Joining the url together
     url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
-#Using the function we previously made to scrape events 
     scrape_events(url)
   }
 }
@@ -135,7 +133,7 @@ for(j in 1:31){
     october[[j]] <- scrape_events(url)
 }
 
-#Create a tibble 
+#Create a tibble from the list 
   october_tibble <- bind_rows(october) |> 
   as.tibble()
 
@@ -222,14 +220,12 @@ events
 ```
 
 ```{r}
-#Final tibble is titled penguin_events 
 penguin_events <- events |> 
 #Separate the time from date to create a separate column
 #   for the time of the events
   separate(date, into = c("date", "time"), sep = " at ") |> 
 #Some of the host names were all caps or had other 
 #   abnormalities that we needed to fix
-#   we used str_to_title to have them all in title case
   mutate(host = str_to_title(host),
 #Some observations had strange patterns in the text (r/n) 
 #   that distracted from the host's name 
