@@ -1,7 +1,7 @@
 ---
 title: "Project_File_Z_G"
 format: 
-  default: pdf
+  pdf: default
 editor: visual
 ---
 
@@ -23,11 +23,25 @@ library(janitor)
 
 ## Penguin Random House Web Scraping
 
-Our data comes from the events page in Penguin Random House. You can find the events page using this link:  (https://www.penguinrandomhouse.com/authors/events/). 
+Our data comes from the events page in Penguin Random House. You can find the events page using [this link]:  (https://www.penguinrandomhouse.com/authors/events/). 
 
 ## Ethical Considerations
 
 We opted to use the robot.txt paths to determine if data from Penguin's book events was permitted for web scraping. The site’s robots.txt file allowed our bots to access and scrape the data. While we considered implementing a polite function to ensure a respectful approach to data retrieval, this step appeared unnecessary given that the data is public and intended for widespread use.
+
+## Novel Insights Potential and Justification 
+
+Our final tibble will hold important information for booksellers, authors, agents, and students to utilize in regards to books/authors from Penguin Random House. We were initially motivated to explore book events from Penguin Random House to inform student decisions to network with agents and authors at various events. 
+
+Students can use our dataset to answer questions such as: 
+
+"Where are events most commonly held?"
+"Which season has the most book events?"
+"What are the best events to attend to network with the right authors and book genres?"
+
+Upon further reflection, we discovered that our data could also be used by booksellers, book agents, and authors. Booksellers and authors may find our data useful because they can analyze current trends with where authors are going (chain or independent bookstore) and what authors are successful in book events (if we assume multiple book events equals a marketable author).Book agents within Penguin Random House or outside of it (smaller boutique literary agencies or other Big Five publishers) can use our data to answer questions on which authors are holding events, when a certain book is no longer welcomed in event spaces, and perhaps even publicity tactics. 
+
+Ultimately, this data has relevant applications for different data needs within the publishing industry, not just students. 
 
 ```{r}
 #Download SelectorGadget to browser
