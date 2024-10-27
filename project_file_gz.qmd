@@ -1,5 +1,6 @@
 ---
-title: "Project_File_Z_G"
+title: "Mini Project 2"
+subtitle: "By Zuzanna and George"
 format: 
   pdf: default
 editor: visual
@@ -23,29 +24,30 @@ library(janitor)
 
 ## Penguin Random House Web Scraping
 
-Our data comes from the events page in Penguin Random House. You can find the events page using [this link]:  (https://www.penguinrandomhouse.com/authors/events/). 
+Our data comes from the events page in Penguin Random House. You can find the events page using *\[the Penguin Random House events page\]*: (https://www.penguinrandomhouse.com/authors/events/).
 
 ## Ethical Considerations
 
 We opted to use the robot.txt paths to determine if data from Penguin's book events was permitted for web scraping. The site’s robots.txt file allowed our bots to access and scrape the data. While we considered implementing a polite function to ensure a respectful approach to data retrieval, this step appeared unnecessary given that the data is public and intended for widespread use.
 
-## Novel Insights Potential and Justification 
+## Novel Insights Potential and Justification
 
-Our final tibble will hold important information for booksellers, authors, agents, and students to utilize in regards to books/authors from Penguin Random House. We were initially motivated to explore book events from Penguin Random House to inform student decisions to network with agents and authors at various events. 
+Our final tibble will hold important information for booksellers, authors, agents, and students to utilize in regards to books/authors from Penguin Random House. We were initially motivated to explore book events from Penguin Random House to inform student decisions to network with agents and authors at various events.
 
-Students can use our dataset to answer questions such as: 
+Students can use our data to answer questions such as:
 
-"Where are events most commonly held?"
-"Which season has the most book events?"
-"What are the best events to attend to network with the right authors and book genres?"
+-   "Where are events most commonly held?"
 
-Upon further reflection, we discovered that our data could also be used by booksellers, book agents, and authors. Booksellers and authors may find our data useful because they can analyze current trends with where authors are going (chain or independent bookstore) and what authors are successful in book events (if we assume multiple book events equals a marketable author).Book agents within Penguin Random House or outside of it (smaller boutique literary agencies or other Big Five publishers) can use our data to answer questions on which authors are holding events, when a certain book is no longer welcomed in event spaces, and perhaps even publicity tactics. 
+-   "Which season has the most book events?"
 
-Ultimately, this data has relevant applications for different data needs within the publishing industry, not just students. 
+-   "What are the best events to attend to network with the right authors and book genres?"
+
+Upon further reflection, we discovered that our data could also be used by booksellers, book agents, and authors. Booksellers and authors may find our data useful because they can analyze current trends with where authors are going (chain or independent bookstore) and what authors are successful in book events (if we assume multiple book events equals a marketable author).Book agents within Penguin Random House or outside of it (smaller boutique literary agencies or other Big Five publishers) can use our data to answer questions on which authors are holding events, when a certain book is no longer welcomed in event spaces, and perhaps even publicity tactics. Ultimately, this data has relevant applications for different data needs within the publishing industry, not just students.
 
 ```{r}
 #Download SelectorGadget to browser
-#Step 0: Check if the website allows scraping + making sure to do it in a friendly manner
+
+#Step 0: Check if the website allows scraping 
 robotstxt::paths_allowed("https://www.penguinrandomhouse.com/authors/events/")
 
 #Create a function to find individual information from the events page
@@ -62,7 +64,8 @@ info_from_page("https://www.penguinrandomhouse.com/authors/events/", ".date-disp
 ```
 
 ```{r}
-#Creating a function called scrape_events that takes information from the events page using the CSS path and compiles it into a tibble 
+#Creating a function called scrape_events to scrape info
+#   using the CSS path and compile it into a tibble 
 scrape_events <- function(url){
   
   date <- info_from_page(url, ".start")
@@ -86,9 +89,11 @@ scrape_events("https://www.penguinrandomhouse.com/authors/events/?page=2")
 
 ```{r}
 #| eval: FALSE
-#This for loop runs all of the months and all of the days in one chunk but it is not the most efficient because of how long it takes to run.
+#This for loop runs all of the months and all of the days
+#   in one chunk but it is not the most efficient 
 
-#If someone is interested in keeping this method in one chunk they can use this code for the nested for loop.
+#If someone is interested in keeping this method in one chunk
+#   they can use this code for the nested for loop.
 
 #Nested for loop with i for months and j for days. 
 for(i in c(10, 11, 12, 1, 2, 3, 4)){
@@ -107,7 +112,8 @@ for(i in c(10, 11, 12, 1, 2, 3, 4)){
 ```{r}
 #Test chunk to see if our previous code worked with a smaller set of data
 
-#If you wanted to run the previous code chunk, this test proves that it will give you something similar to this, only larger.
+#If you wanted to run the previous code chunk, this test 
+#   proves that it will give you a larger version
 
 i=11
 j=1
@@ -117,7 +123,8 @@ scrape_events(url)
 ```
 
 ```{r}
-#Running each individual month as a separate for loop to be more efficient
+#Running each individual month as a separate 
+#   for loop to be more efficient
 
 #Create a list to store your scraped data
 october <- list()
@@ -201,7 +208,9 @@ as.tibble()
 ```
 
 ```{r}
-#Bind all of the tibbles from the previous chunk together to create one big tibble called events 
+#Bind all of the tibbles from the previous chunk 
+#   together to create one big tibble called events 
+
 events <- rbind(october_tibble,
                  november_tibble,
                  december_tibble,
@@ -215,11 +224,15 @@ events
 ```{r}
 #Final tibble is titled penguin_events 
 penguin_events <- events |> 
-#Separate the time from date to create a separate column for the time of the events
+#Separate the time from date to create a separate column
+#   for the time of the events
   separate(date, into = c("date", "time"), sep = " at ") |> 
-#Some of the host names were all caps or had other abnormalities that we needed to fix so we used str_to_title to have them all in title case
+#Some of the host names were all caps or had other 
+#   abnormalities that we needed to fix
+#   we used str_to_title to have them all in title case
   mutate(host = str_to_title(host),
-#Some observations had strange patterns in the text (r/n) that distracted from the host's name 
+#Some observations had strange patterns in the text (r/n) 
+#   that distracted from the host's name 
          host = str_replace_all(host, "[\r\n]", " ")
   )
 ```
