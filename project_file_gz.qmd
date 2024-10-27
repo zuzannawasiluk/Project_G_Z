@@ -1,6 +1,7 @@
 ---
 title: "Project_File_Z_G"
-format: pdf
+format: 
+  default: pdf
 editor: visual
 ---
 
