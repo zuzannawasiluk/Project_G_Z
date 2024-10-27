@@ -101,7 +101,11 @@ for(i in c(10, 11, 12, 1, 2, 3, 4)){
   for(j in 1:31){
 #Combining i and j for the dates to keep track of event dates
     date = str_c(i, "/", j, "/", "2024")
-    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    url = str_c(
+      "https://www.penguinrandomhouse.com/authors/events/?datefrom=",
+      date, 
+      "&dateto=", 
+      date)
     scrape_events(url)
   }
 }
@@ -116,7 +120,11 @@ for(i in c(10, 11, 12, 1, 2, 3, 4)){
 i=11
 j=1
 date = str_c(i, "/", j, "/", "2024")
-url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+url = str_c(
+      "https://www.penguinrandomhouse.com/authors/events/?datefrom=",
+      date, 
+      "&dateto=", 
+      date)
 scrape_events(url)
 ```
 
@@ -129,7 +137,11 @@ october <- list()
   i=10
 for(j in 1:31){
     date = str_c(i, "/", j, "/", "2024")
-    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    url = str_c(
+      "https://www.penguinrandomhouse.com/authors/events/?datefrom=",
+      date, 
+      "&dateto=", 
+      date)
     october[[j]] <- scrape_events(url)
 }
 
@@ -142,7 +154,11 @@ november <- list()
   i=11
 for(j in 1:30){
     date = str_c(i, "/", j, "/", "2024")
-    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    url = str_c(
+      "https://www.penguinrandomhouse.com/authors/events/?datefrom=",
+      date, 
+      "&dateto=", 
+      date)
     november[[j]] <- scrape_events(url)
 }
   
@@ -153,7 +169,11 @@ december <- list()
   i=12
 for(j in 1:31){
     date = str_c(i, "/", j, "/", "2024")
-    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    url = str_c(
+      "https://www.penguinrandomhouse.com/authors/events/?datefrom=",
+      date, 
+      "&dateto=", 
+      date)
     december[[j]] <- scrape_events(url)
 }
   
@@ -164,7 +184,11 @@ january <- list()
   i=1
 for(j in 1:31){
     date = str_c(i, "/", j, "/", "2025")
-    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    url = str_c(
+      "https://www.penguinrandomhouse.com/authors/events/?datefrom=",
+      date, 
+      "&dateto=", 
+      date)
     january[[j]] <- scrape_events(url)
 }
   
@@ -175,7 +199,11 @@ february <- list()
   i=2
 for(j in 1:28){
     date = str_c(i, "/", j, "/", "2025")
-    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    url = str_c(
+      "https://www.penguinrandomhouse.com/authors/events/?datefrom=",
+      date, 
+      "&dateto=", 
+      date)
     february[[j]] <- scrape_events(url)
 }
   
@@ -186,7 +214,11 @@ march <- list()
   i=3
 for(j in 1:31){
     date = str_c(i, "/", j, "/", "2025")
-    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    url = str_c(
+      "https://www.penguinrandomhouse.com/authors/events/?datefrom=",
+      date, 
+      "&dateto=", 
+      date)
     march[[j]] <- scrape_events(url)
 }
   
@@ -197,7 +229,11 @@ april <- list()
   i=4
 for(j in 1:30){
     date = str_c(i, "/", j, "/", "2025")
-    url = str_c("https://www.penguinrandomhouse.com/authors/events/?datefrom=", date, "&dateto=", date)
+    url = str_c(
+      "https://www.penguinrandomhouse.com/authors/events/?datefrom=",
+      date, 
+      "&dateto=", 
+      date)
     april[[j]] <- scrape_events(url)
 }
   
@@ -229,6 +265,5 @@ penguin_events <- events |>
   mutate(host = str_to_title(host),
 #Some observations had strange patterns in the text (r/n) 
 #   that distracted from the host's name 
-         host = str_replace_all(host, "[\r\n]", " ")
-  )
+         host = str_replace_all(host, "[\r\n]", " "))
 ```
