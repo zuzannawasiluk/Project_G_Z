@@ -45,8 +45,6 @@ Students can use our data to answer questions such as:
 Upon further reflection, we discovered that our data could also be used by booksellers, book agents, and authors. Booksellers and authors may find our data useful because they can analyze current trends with where authors are going (chain or independent bookstore) and what authors are successful in book events (if we assume multiple book events equals a marketable author).Book agents within Penguin Random House or outside of it (smaller boutique literary agencies or other Big Five publishers) can use our data to answer questions on which authors are holding events, when a certain book is no longer welcomed in event spaces, and perhaps even publicity tactics. Ultimately, this data has relevant applications for different data needs within the publishing industry, not just students.
 
 ```{r}
-#Download SelectorGadget to browser to find CSS path
-
 #Step 0: Check if the website allows scraping 
 robotstxt::paths_allowed("https://www.penguinrandomhouse.com/authors/events/")
 
@@ -146,9 +144,8 @@ for(j in 1:31){
 }
 
 #Create a tibble from the list 
-  october_tibble <- bind_rows(october) |> 
-  as.tibble()
-
+october_tibble <- bind_rows(october) |> 
+  as_tibble()
   
 november <- list()
   i=11
@@ -163,7 +160,7 @@ for(j in 1:30){
 }
   
   november_tibble <- bind_rows(november) |> 
-    as.tibble() 
+    as_tibble() 
   
 december <- list()
   i=12
@@ -178,7 +175,7 @@ for(j in 1:31){
 }
   
   december_tibble <- bind_rows(december) |> 
-    as.tibble()
+    as_tibble()
   
 january <- list()
   i=1
@@ -193,7 +190,7 @@ for(j in 1:31){
 }
   
 january_tibble <- bind_rows(january) |> 
-as.tibble()
+  as_tibble()
 
 february <- list()
   i=2
@@ -208,7 +205,7 @@ for(j in 1:28){
 }
   
   february_tibble <- bind_rows(february) |> 
-    as.tibble() 
+    as_tibble() 
   
 march <- list()
   i=3
@@ -223,7 +220,7 @@ for(j in 1:31){
 }
   
   march_tibble <- bind_rows(march) |> 
-    as.tibble() 
+    as_tibble() 
   
 april <- list()
   i=4
@@ -238,7 +235,7 @@ for(j in 1:30){
 }
   
 april_tibble <- bind_rows(april) |> 
-as.tibble()
+  as_tibble()
 ```
 
 ```{r}
@@ -266,4 +263,5 @@ penguin_events <- events |>
 #Some observations had strange patterns in the text (r/n) 
 #   that distracted from the host's name 
          host = str_replace_all(host, "[\r\n]", " "))
+penguin_events
 ```
